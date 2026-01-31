@@ -16,19 +16,9 @@ Download packages from GitHub Releases
 
 apk add --allow-untrusted *.apk
 
-Либо можно все установить на роутер скриптом, автоматизацию пилить не стал, для каждого релиза свой скрипт
-
-RC1
+Либо можно все установить на роутер скриптом
 ```
-sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/refs/heads/master/install_only_apk_rc1.sh)
-```
-RC2
-```
-sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/refs/heads/master/install_only_apk_rc2.sh)
-```
-RC3
-```
-sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/refs/heads/master/install_only_apk_rc3.sh)
+sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/refs/heads/master/amneziawg-install.sh)
 ```
 
 Настройка вручную через LuCI / Manual LuCI configuration
