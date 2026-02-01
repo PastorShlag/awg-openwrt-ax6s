@@ -2,119 +2,80 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const core = require('@actions/core');
 
-const version = process.argv[2]; // Получение версии OpenWRT из аргумента командной строки
-const filterTargetsStr = process.argv[3] || ''; // Фильтр по targets (опционально, через запятую)
-const filterSubtargetsStr = process.argv[4] || ''; // Фильтр по subtargets (опционально, через запятую)
-
-// Преобразуем строки с запятыми в массивы
-const filterTargets = filterTargetsStr ? filterTargetsStr.split(',').map(t => t.trim()).filter(t => t) : [];
-const filterSubtargets = filterSubtargetsStr ? filterSubtargetsStr.split(',').map(s => s.trim()).filter(s => s) : [];
+const version = process.argv[2];
 
 if (!version) {
-  core.setFailed('Version argument is required');
+  core.setFailed('OpenWrt version is required (e.g. 25.12.0-rc4 or 25.12.0)');
   process.exit(1);
 }
 
-const url = `https://downloads.openwrt.org/releases/${version}/targets/`;
+// Только OpenWrt 25.x
+if (!/^25\.\d+\.\d+(-rc\d+)?$/.test(version)) {
+  core.setFailed(`Unsupported OpenWrt version: ${version}`);
+  process.exit(1);
+}
+
+// Жёстко под SNR AX2
+const TARGET = 'mediatek';
+const SUBTARGET = 'filogic';
+
+const PACKAGES_URL =
+  `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/packages/`;
 
 async function fetchHTML(url) {
-  try {
-    const { data } = await axios.get(url);
-    return cheerio.load(data);
-  } catch (error) {
-    console.error(`Error fetching HTML for ${url}: ${error}`);
-    throw error;
+  const { data } = await axios.get(url, {
+    timeout: 15000,
+    validateStatus: s => s === 200
+  });
+  return cheerio.load(data);
+}
+
+async function getKernelInfo() {
+  const $ = await fetchHTML(PACKAGES_URL);
+
+  const links = $('a').map((_, el) => $(el).attr('href')).get();
+  const apkFiles = links.filter(n => n && n.endsWith('.apk'));
+
+  if (apkFiles.length === 0) {
+    throw new Error('Packages directory is empty (build not ready yet)');
   }
-}
 
-async function getTargets() {
-  const $ = await fetchHTML(url);
-  const targets = [];
-  $('table tr td.n a').each((index, element) => {
-    const name = $(element).attr('href');
-    if (name && name.endsWith('/')) {
-      targets.push(name.slice(0, -1));
+  for (const name of apkFiles) {
+    const match = name.match(
+      /kernel_\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?_([a-zA-Z0-9_-]+)\.apk$/
+    );
+
+    if (match) {
+      return {
+        vermagic: match[1],
+        pkgarch: match[2],
+      };
     }
-  });
-  return targets;
-}
+  }
 
-async function getSubtargets(target) {
-  const $ = await fetchHTML(`${url}${target}/`);
-  const subtargets = [];
-  $('table tr td.n a').each((index, element) => {
-    const name = $(element).attr('href');
-    if (name && name.endsWith('/')) {
-      subtargets.push(name.slice(0, -1));
-    }
-  });
-  return subtargets;
-}
-
-async function getDetails(target, subtarget) {
-  const packagesUrl = `${url}${target}/${subtarget}/packages/`;
-  const $ = await fetchHTML(packagesUrl);
-  let vermagic = '';
-  let pkgarch = '';
-
-  $('a').each((index, element) => {
-    const name = $(element).attr('href');
-    if (name && name.startsWith('kernel_')) {
-      const vermagicMatch = name.match(/kernel_\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?_([a-zA-Z0-9_-]+)\.apk$/);
-      if (vermagicMatch) {
-        vermagic = vermagicMatch[1];
-        pkgarch = vermagicMatch[2];
-      }
-    }
-  });
-
-  return { vermagic, pkgarch };
+  throw new Error('Kernel package not found in packages directory');
 }
 
 async function main() {
   try {
-    const targets = await getTargets();
-    const jobConfig = [];
+    core.info(`OpenWrt version : ${version}`);
+    core.info(`Target          : ${TARGET}/${SUBTARGET}`);
+    core.info(`Packages URL    : ${PACKAGES_URL}`);
 
-    for (const target of targets) {
-      // Пропускаем target, если указан массив фильтров и target не входит в него
-      if (filterTargets.length > 0 && !filterTargets.includes(target)) {
-        continue;
-      }
+    const { vermagic, pkgarch } = await getKernelInfo();
 
-      const subtargets = await getSubtargets(target);
-      for (const subtarget of subtargets) {
-        // Пропускаем subtarget, если указан массив фильтров и subtarget не входит в него
-        if (filterSubtargets.length > 0 && !filterSubtargets.includes(subtarget)) {
-          continue;
-        }
-
-        // Добавляем в конфигурацию только если:
-        // 1. Оба массива пустые (автоматическая сборка по тегу) - собираем всё
-        // 2. Оба массива НЕ пустые (ручной запуск) - target И subtarget должны быть в своих массивах
-        const isAutomatic = filterTargets.length === 0 && filterSubtargets.length === 0;
-        const isManualMatch = filterTargets.length > 0 && filterSubtargets.length > 0 &&
-                              filterTargets.includes(target) && filterSubtargets.includes(subtarget);
-        
-        if (!isAutomatic && !isManualMatch) {
-          continue;
-        }
-
-        const { vermagic, pkgarch } = await getDetails(target, subtarget);
-
-        jobConfig.push({
-          tag: version,
-          target,
-          subtarget,
-          vermagic,
-          pkgarch,
-        });
-      }
-    }
-
-    core.setOutput('job-config', JSON.stringify(jobConfig));
-  } catch (error) {
-    core.setFailed(error.message);
+    core.setOutput(
+      'job-config',
+      JSON.stringify([{
+        tag: version,
+        target: TARGET,
+        subtarget: SUBTARGET,
+        vermagic,
+        pkgarch,
+      }])
+    );
+  } catch (err) {
+    core.setFailed(err.message);
   }
 }
 
