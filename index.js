@@ -15,12 +15,13 @@ if (!/^25\.\d+\.\d+(-rc\d+)?$/.test(version)) {
   process.exit(1);
 }
 
-// Жёстко под AX3000T
+// Жёстко под AX6Ы
 const TARGET = 'mediatek';
 const SUBTARGET = 'mt7622';
 
 const PACKAGES_URL =
-  `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/kmods/6.12.66-1-2e14cd580d013ab4e512592b79bf44ae/`;
+//  `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/packages//`;
+  `https://downloads.openwrt.org/releases/25.12.0-rc4/targets/mediatek/mt7622/packages/`;
 
 async function fetchHTML(url) {
   const { data } = await axios.get(url, {
