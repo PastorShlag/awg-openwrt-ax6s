@@ -15,9 +15,9 @@ if (!/^25\.\d+\.\d+(-rc\d+)?$/.test(version)) {
   process.exit(1);
 }
 
-// Жёстко под AX6S
+// Жёстко под AX3000T
 const TARGET = 'mediatek';
-const SUBTARGET = 'mt7622';
+const SUBTARGET = 'filogic';
 
 const PACKAGES_URL =
   `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/packages/`;
