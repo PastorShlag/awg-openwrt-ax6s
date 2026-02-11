@@ -12,7 +12,7 @@
 **AmneziaWG** — это сборка WireGuard‑совместимого VPN (AWG 2.0) для **OpenWrt 25.12.x**, ориентированная на конкретную модель роутера **AX6S**.
 
 ⚠️ Это **форк репозитория**:
-[https://github.com/Slava-Shchipunov/awg-openwrt](https://github.com/pro100it/awg-openwrt)
+[https://github.com/pro100it/awg-openwrt](https://github.com/pro100it/awg-openwrt)
 
 Проект использует **универсальный install‑скрипт**, который автоматически определяет версию OpenWrt и устанавливает подходящие `.apk`‑пакеты из GitHub Releases.
 
