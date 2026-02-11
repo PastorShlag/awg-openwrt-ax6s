@@ -1,4 +1,4 @@
-# AmneziaWG for OpenWrt 25.12.x (SNR AX2)
+# AmneziaWG for OpenWrt 25.12.x (AX6S)
 
 ![OpenWrt](https://img.shields.io/badge/OpenWrt-25.12.x-blue)
 ![Platform](https://img.shields.io/badge/Platform-mediatek%2Ffilogic-orange)
@@ -9,23 +9,12 @@
 
 ## 🇷🇺 Описание
 
-**AmneziaWG** — это сборка WireGuard‑совместимого VPN (AWG 2.0) для **OpenWrt 25.12.x**, ориентированная на конкретную модель роутера **SNR AX2**.
+**AmneziaWG** — это сборка WireGuard‑совместимого VPN (AWG 2.0) для **OpenWrt 25.12.x**, ориентированная на конкретную модель роутера **AX6S**.
 
-⚠️ Это **форк оригинального репозитория**:
-[https://github.com/Slava-Shchipunov/awg-openwrt](https://github.com/Slava-Shchipunov/awg-openwrt)
+⚠️ Это **форк репозитория**:
+[https://github.com/Slava-Shchipunov/awg-openwrt](https://github.com/pro100it/awg-openwrt)
 
 Проект использует **универсальный install‑скрипт**, который автоматически определяет версию OpenWrt и устанавливает подходящие `.apk`‑пакеты из GitHub Releases.
-
----
-
-## 🇬🇧 Description
-
-**AmneziaWG** is a WireGuard‑compatible VPN build (AWG 2.0) for **OpenWrt 25.12.x**, specifically targeting the **SNR AX2** router.
-
-⚠️ This is a **fork of the original repository**:
-[https://github.com/Slava-Shchipunov/awg-openwrt](https://github.com/Slava-Shchipunov/awg-openwrt)
-
-The project uses a **single universal install script** that automatically detects the OpenWrt version and installs the correct `.apk` packages from GitHub Releases.
 
 ---
 
@@ -34,8 +23,8 @@ The project uses a **single universal install script** that automatically detect
 ### ✅ Поддерживается / Supported
 
 * **OpenWrt:** `25.12.0-rc1`, `25.12.0-rc2`, `25.12.0-rc3`, `25.12.0-rc4`
-* **Device / Устройство:** SNR AX2
-* **Target:** `mediatek / filogic`
+* **Device / Устройство:** AX6S
+* **Target:** `mediatek / mt7622`
 * **AmneziaWG:** 2.0
 * **Package format:** `.apk`
 * **Package manager:** `apk`
@@ -73,17 +62,11 @@ apk add --allow-untrusted *.apk
 * определяет target устройства
 * загружает нужные пакеты из Releases
 
-The script automatically:
-
-* detects OpenWrt version
-* detects device target
-* downloads the correct packages from Releases
-
 ```sh
 sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/master/amneziawg-install.sh)
 ```
 
-Поддерживаемые версии / Supported versions:
+Поддерживаемые версии:
 
 * `25.12.0-rc1`
 * `25.12.0-rc2`
@@ -92,7 +75,7 @@ sh <(wget -O - https://raw.githubusercontent.com/pro100it/awg-openwrt/master/amn
 
 ---
 
-## ⚙️ Настройка / Configuration
+## ⚙️ Настройка 
 
 После установки настройка выполняется через **LuCI**:
 
@@ -127,4 +110,4 @@ This project is provided **as is**, without any warranty.
 ## Credits
 
 * Original project: **Slava‑Shchipunov**
-* Fork & automation: **pro100it**
+* Fork & automation: **PastorShlag**
