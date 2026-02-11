@@ -17,7 +17,7 @@ echo "OpenWrt version : $VERSION"
 echo "Target          : $TARGET/$SUBTARGET"
 
 # --- GitHub ---
-BASE_URL="https://github.com/pro100it/awg-openwrt/releases/download/v${VERSION}"
+BASE_URL="https://github.com/PastorShlag/awg-openwrt-ax6s/releases/download/v${VERSION}"
 POSTFIX="_v${VERSION}__${TARGET}_${SUBTARGET}.apk"
 
 TMP_DIR="/tmp/amneziawg"
