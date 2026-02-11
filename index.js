@@ -17,10 +17,10 @@ if (!/^25\.\d+\.\d+(-rc\d+)?$/.test(version)) {
 
 // Жёстко под AX3000T
 const TARGET = 'mediatek';
-const SUBTARGET = 'filogic';
+const SUBTARGET = 'mt7622';
 
 const PACKAGES_URL =
-  `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/packages/`;
+  `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/kmods/6.12.66-1-2e14cd580d013ab4e512592b79bf44ae/`;
 
 async function fetchHTML(url) {
   const { data } = await axios.get(url, {
