@@ -43,7 +43,7 @@ async function getKernelInfo() {
 
   for (const name of apkFiles) {
     const match = name.match(
-      /kernel-\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?_([a-zA-Z0-9_-]+)\.apk$/
+//      /kernel-\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?_([a-zA-Z0-9_-]+)\.apk$/
       /kernel-\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?(?:_([a-zA-Z0-9_-]+))?\.apk$/
 //      /kernel-6.12.66~2e14cd580d013ab4e512592b79bf44ae-r1.apk$/
     );
