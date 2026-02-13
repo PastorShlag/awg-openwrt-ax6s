@@ -21,7 +21,6 @@ const SUBTARGET = 'mt7622';
 
 const PACKAGES_URL =
   `https://downloads.openwrt.org/releases/${version}/targets/${TARGET}/${SUBTARGET}/packages/`;
-//  `https://downloads.openwrt.org/releases/25.12.0-rc4/targets/mediatek/mt7622/packages/`;
 
 async function fetchHTML(url) {
   const { data } = await axios.get(url, {
@@ -43,9 +42,7 @@ async function getKernelInfo() {
 
   for (const name of apkFiles) {
     const match = name.match(
-//      /kernel-\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?_([a-zA-Z0-9_-]+)\.apk$/
       /kernel[_-]\d+\.\d+\.\d+(?:-\d+)?[-~]([a-f0-9]+)(?:-r\d+)?(?:_([a-zA-Z0-9_-]+))?\.apk$/
-//      /kernel-6.12.66~2e14cd580d013ab4e512592b79bf44ae-r1.apk$/
     );
 
     if (match) {
